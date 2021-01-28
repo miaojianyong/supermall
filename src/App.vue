@@ -1,28 +1,22 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <router-view/> <!-- 使用router-view标签让每个页面的内容渲染出来 -->
+    <mian-tab-bar/> <!-- 使用组件 -->
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
-export default {
-  name: 'app',
-  components: {
-    HelloWorld
+  // 导入 MainTabBar 组件
+  import MianTabBar from "components/content/mainTabbar/MianTabBar";
+  export default {
+    name: 'app',
+    components: {
+      MianTabBar // 注册组件
+    }
   }
-}
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  /* 导入公共的css文件 */
+  @import "assets/css/base.css";
 </style>
