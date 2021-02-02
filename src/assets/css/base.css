@@ -5,53 +5,54 @@
 /* :root 是获取根元素 即html
 下述是css里定义变量的方式 */
 :root {
-    --color-text: #666; /*文字颜色*/
-    --color-high-text: #ff5777; /*文字高亮时颜色*/
-    --color-tint: #ff8198; /*类似导航的背景颜色*/
-    --color-background: #fff; /*背景颜色*/
-    --font-size: 14px; /*整体的字体大小*/
-    --line-height: 1.5; /*行高*/
+  --color-text: #666; /*文字颜色*/
+  --color-high-text: #ff5777; /*文字高亮时颜色*/
+  --color-tint: #ff8198; /*类似导航的背景颜色*/
+  --color-background: #fff; /*背景颜色*/
+  --font-size: 14px; /*整体的字体大小*/
+  --line-height: 1.5; /*行高*/
 }
 
 *,
 *::before,
 *::after {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif;
-    user-select: none; /* 禁止用户鼠标在页面中选择文字/图片等*/
-    -webkit-tap-highlight-color: transparent;
-    background: var(--color-background);
-    color: var(--color-text);
-    width: 100vw;
+  font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans,
+    sans-serif;
+  user-select: none; /* 禁止用户鼠标在页面中选择文字/图片等*/
+  -webkit-tap-highlight-color: transparent;
+  background: var(--color-background);
+  color: var(--color-text);
+  width: 100vw;
 }
 
 a {
-    color: var(--color-text);
-    text-decoration: none;
+  color: var(--color-text);
+  text-decoration: none;
 }
 
 .clear-fix::after {
-    clear: both;
-    content: '';
-    display: block;
-    width: 0;
-    height: 0;
-    visibility: hidden;
+  clear: both;
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  visibility: hidden;
 }
 
 .clear-fix {
-    zoom: 1;
+  zoom: 1;
 }
 
 .left {
-    float: left;
+  float: left;
 }
 
 .right {
-    float: right;
+  float: right;
 }

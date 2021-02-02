@@ -32,6 +32,8 @@
     methods: {
       itemClick(index) { // 监听当前点击的标题 并添加上述状态
         this.currentIndex = index;
+        // 向组件外部传递数据 1> 传递的事件名称(自定义) 2> index对应相关索引的按钮
+        this.$emit('tabClick', index);
       }
     }
   }
