@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <keep-alive>
+    <!-- 让该组件包裹下述组件 下述组件内容会保留下来 不会被销毁
+    exclude="Detail" 表示排除了详情组件 -->
+    <keep-alive exclude="Detail"> 
       <router-view/> <!-- 使用router-view标签让每个页面的内容渲染出来 -->
     </keep-alive>
     <mian-tab-bar/> <!-- 使用组件 -->

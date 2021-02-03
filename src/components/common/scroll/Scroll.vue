@@ -65,6 +65,9 @@
       refresh() { // 封装 滚动插件 刷新可滚动的区域
         this.scroll && this.scroll.refresh(); // 解决图片加载后不能滚动的问题
       },
+      getScrollY() { // 封装 滚动到什么位置的函数
+        return this.scroll ? this.scroll.y : 0;
+      }
     }
   }
 </script>

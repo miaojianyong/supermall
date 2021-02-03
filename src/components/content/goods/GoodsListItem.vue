@@ -1,5 +1,6 @@
 <template>
-  <div class="goods-item">
+  <!-- 监听小商品页卡的点击 -->
+  <div class="goods-item" @click="itemClick">
     <!-- @load="方法名" 表示监听图片加载完后 触发 -->
     <img :src="goodsItem.show.img" alt="" @load="imageLoad"> <!-- 商品图片 -->
     <div class="goods-info">
@@ -25,6 +26,11 @@
       imageLoad() { // 实现图片加载完成后方法
         // 使用事件总线管理事件 发送事件(图片加载完成事件)
         this.$bus.$emit('itemImageLoad');
+      },
+      itemClick() { // 实现商品页卡的点击
+        // 点击后，跳转到对应商品的详情页 push()可返回
+        // 使用动态路由的方式传递参数
+        this.$router.push('/detail/' + this.goodsItem.iid);
       }
     }
   }

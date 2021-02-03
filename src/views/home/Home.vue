@@ -148,8 +148,8 @@
       </ul>
     </scroll>
     <!-- 使用 返回顶部组件
-     监听组件的点击 不能直接使用@click 需使用@click.native
-     v-show="isShowBackTop" 表示给该组件设置默认值 隐藏 -->
+    监听组件的点击 不能直接使用@click 需使用@click.native
+    v-show="isShowBackTop" 表示给该组件设置默认值 隐藏 -->
     <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
@@ -205,12 +205,23 @@
         isShowBackTop: false , // 设置返回顶部按钮的默认值
         tabOffsetTop: 0, // 设置分类组件距离顶部的距离
         isTabFixed: false, // 设置分类组件默认属性(即不吸顶)
+        saveY: 0, // 保存当前页面离开时位置
       }
     },
     computed: { // 定义计算属性
       showGoods() { // 显示视频分类数据
         return this.goods[this.currentType].list;
       }
+    },
+    activated() { // 活跃时 即在当前页面时 触发
+      // 当回到当前页面时，把记录的saveY给当前页面
+      this.$refs.scroll.scrollTo(0, this.saveY, 0);
+      // 再次活跃 即回到当前页面时 刷新scroll的滚动区域
+      this.$refs.scroll.refresh();
+    },
+    deactivated() { // 不活跃时 即在离开当前页面时 触发
+      // 把离开该页面时滚动的位置 给定义的saveY
+      this.saveY = this.$refs.scroll.getScrollY();
     },
     created() { // 生命周期函数，即组件创建完成后
       /* 发送网络请求 */

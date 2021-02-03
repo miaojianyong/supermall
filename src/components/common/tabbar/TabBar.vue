@@ -6,9 +6,9 @@
 </template>
 
 <script>
-export default {
-name: "TabBar"
-}
+  export default {
+    name: "TabBar"
+  }
 </script>
 
 <style scoped>

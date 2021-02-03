@@ -4,7 +4,7 @@
     <!--<img src="../../assets/img/tabbar/home.svg" alt="">
     <div>首页</div>-->
     <!-- 动态生成上述的icon和下面的文字 故使用插槽
-     下是添加name属性表示是具名插槽 -->
+    下是添加name属性表示是具名插槽 -->
     <!-- 因为slot中的内容都会被替换，故需要添加属性、判断等操作可以在外层的div中进行-->
     <div v-if="!isActive">
       <slot name="item-icon"></slot> <!-- 填充icon 未选中状态 -->
