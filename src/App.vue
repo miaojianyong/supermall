@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <router-view/> <!-- 使用router-view标签让每个页面的内容渲染出来 -->
+    <keep-alive>
+      <router-view/> <!-- 使用router-view标签让每个页面的内容渲染出来 -->
+    </keep-alive>
     <mian-tab-bar/> <!-- 使用组件 -->
   </div>
 </template>

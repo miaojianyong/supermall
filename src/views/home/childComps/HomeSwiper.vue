@@ -6,7 +6,7 @@
       <!-- 每个轮播图都可点击故使用a标签 对应的地址动态绑定 -->
       <a :href="item.link">
         <!-- 对应的图片地址也是动态绑定 -->
-        <img :src="item.image" alt="">
+        <img :src="item.image" alt="" @load="imageLoad"> <!-- 监听图片加载 -->
       </a>
     </swiper-item>
   </swiper>
@@ -25,9 +25,23 @@
         }
       }
     },
+    data() {
+      return {
+        isLoad: false, // 记录图片加载事件状态
+      }
+    },
     components: { // 注册组件
       Swiper,
       SwiperItem
+    },
+    methods: {
+      imageLoad() {
+        if (!this.isLoad) {
+          // 把事件发送出去
+          this.$emit('swiperImageLoad');
+          this.isLoad = true; // 事件发送后，改变上述状态，就不再发送事件
+        }
+      }
     }
   }
 </script>

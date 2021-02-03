@@ -1,6 +1,7 @@
 <template>
   <div class="goods-item">
-    <img :src="goodsItem.show.img" alt=""> <!-- 商品图片 -->
+    <!-- @load="方法名" 表示监听图片加载完后 触发 -->
+    <img :src="goodsItem.show.img" alt="" @load="imageLoad"> <!-- 商品图片 -->
     <div class="goods-info">
       <p>{{goodsItem.title}}</p> <!-- 商品描述 -->
       <span class="price">{{goodsItem.price}}</span> <!-- 商品价格 -->
@@ -18,6 +19,12 @@
         default() {
           return {}
         }
+      }
+    },
+    methods: {
+      imageLoad() { // 实现图片加载完成后方法
+        // 使用事件总线管理事件 发送事件(图片加载完成事件)
+        this.$bus.$emit('itemImageLoad');
       }
     }
   }

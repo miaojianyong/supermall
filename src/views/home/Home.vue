@@ -2,6 +2,13 @@
   <div id="home">
     <!-- 使用 导航组件 -->
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
+    <!-- 复制下述分类组件
+    添加类 class="tab-control" 设置样式
+    v-show="false" 表示默认该组件是隐藏的 -->
+    <tab-control :titles="['流行','新款','精选']"
+                 ref="tabControl1"
+                 @tabClick="tabClick"
+                 class="tab-control" v-show="isTabFixed"/>
     <!-- 使用封装好的 滚动组件 包裹需要滚动的内容
      content 来设置控制滚动的整体范围
      添加ref属性方便选中
@@ -17,17 +24,21 @@
             :pull-up-load="true"
             @pullingUp="loadMore">
       <!-- 使用 轮播图处理组件
-    :banners="banners" 传递网络请求的数据给该组件 -->
-      <home-swiper :banners="banners"/>
+      :banners="banners" 传递网络请求的数据给该组件
+      @swiperImageLoad 监听子组件传递过来的事件 即图片加载完成 -->
+      <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad"/>
       <!-- 使用 推荐信息展示处理组件 -->
       <recommend-view :recommends="recommends"/>
       <!-- 使用 本周流行 - 活动 组件文件 -->
       <feature-view/>
       <!-- 使用 选项卡 商品分类导航 组件文件 并传入对应的标题数据 -->
-      <!-- 给组件添加类，在下述样式中实现该组件到指定位置停留 -->
+      <!-- 给组件添加 ref 方便选择该组件
+       :class 动态添加类 决定该组件是否吸顶 -- 删除该属性
+       @tabClick 监听组件传递过来的事件 -->
       <tab-control :titles="['流行','新款','精选']"
-                   class="tab-control"
-                   @tabClick="tabClick"/> <!-- 监听组件传递过来的事件 -->
+                   ref="tabControl2"
+                   :class="{fixed: isTabFixed}"
+                   @tabClick="tabClick"/>
 
       <!-- 使用 商品展示组件 -->
       <!-- <goods-list :goods="goods[currentType].list"/> -->
@@ -164,6 +175,8 @@
 
   // 导入 首页的网络请求处理文件 首页商品数据
   import {getHomeMultidata,getHomeGoods} from 'network/home';
+  // 导入 防抖函数
+  import {debounce} from 'common/utils';
   export default {
     name: "Home",
     components: { // 注册组件
@@ -190,6 +203,8 @@
         },
         currentType: 'pop', // 设置首页默认的显示的数据类型
         isShowBackTop: false , // 设置返回顶部按钮的默认值
+        tabOffsetTop: 0, // 设置分类组件距离顶部的距离
+        isTabFixed: false, // 设置分类组件默认属性(即不吸顶)
       }
     },
     computed: { // 定义计算属性
@@ -207,6 +222,15 @@
       this.getHomeGoods('new');
       this.getHomeGoods('sell');
     },
+    mounted() { // 当页面中有创建的元素时，调用此回调函数
+      /* 1. 图片加载完成的事件监听 */
+      // 使用导入的放抖动函数 即(1> 表示函数, 2> 表示时间)
+      const refresh = debounce(this.$refs.scroll.refresh, 200)
+      // 监听item组件中图片加载完成事件发送来的事件 事件总线
+      this.$bus.$on('itemImageLoad', () => {
+        refresh();
+      })
+    },
     methods: { // 把上述created函数中的代码放到此处
       /* 下述是事件监听相关方法*/
       tabClick(index) {
@@ -222,18 +246,31 @@
             this.currentType = 'sell'
             break
         }
+        // 把上述两个分类组件的选中项保持一致
+        this.$refs.tabControl1.currentIndex = index;
+        this.$refs.tabControl2.currentIndex = index;
       },
       backClick() { // 实现监听返回顶部按钮的点击
         // this.$refs.scroll 获取上述的scroll组件
         this.$refs.scroll.scrollTo(0, 0); // 调用scroll组件中的方法
       },
       contentScroll(position) { // 实现实时监听滚动的事件
+        // 1. 判断BackTop是否显示
         // 当滚动的距离大于1000才显示 返回顶部按钮
         this.isShowBackTop = (-position.y) > 1000;
+        // 2. 决定tabControl是否吸顶(即添加 position: fixed 属性，即改为固定定位)
+        this.isTabFixed = (-position.y) > this.tabOffsetTop;
       },
       loadMore() { // 实现上拉加载更多事件
         // 针对对应的类型 加载更多数据 如在流行分类中 上拉后就加载流行中的数据
         this.getHomeGoods(this.currentType);
+      },
+      swiperImageLoad() { // 实现上述轮播图图片加载完成事件
+        /* 获取tabControl即分类组件的offsetTop */
+        // 组件是没有offsetTop属性的，故需获取组件内部的DOM元素
+        // 所有组件都有一个属性 $el 用于获取组件中的元素
+        this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
+        // console.log(this.$refs.tabControl2.$el.offsetTop) 距离顶部的距离
       },
       /* 下述是网络请求相关方法 */
       getHomeMultidata() {
@@ -263,7 +300,7 @@
 
 <style scoped> /* scoped 表示作用域 即下述样式只在该组件内部起作用 */
   #home { /* 让导航覆盖的轮播图显示出来 */
-    padding-top: 44px;
+    /*padding-top: 44px;*/
     height: 100vh; /* 表示整个浏览器窗口高度 */
     position: relative; /* 相对定位 子绝父相 */
   }
@@ -272,17 +309,26 @@
     background-color: var(--color-tint); /* 使用公共css文件中的变量设置颜色 */
     color: #fff; /* 设置文字颜色 */
 
-    position: fixed; /* 给导航栏添加固定定位 不让他跟着页面移动 */
+    /*position: fixed; !* 给导航栏添加固定定位 不让他跟着页面移动 *!
     left: 0;
     right: 0;
     top: 0;
-    z-index: 8;
+    z-index: 8;*/
   }
-  .tab-control { /* 实现该活动组件 在页面下拉到此组件位置时，停留在页面顶部*/
+  /*.tab-control { !* 实现该活动组件 在页面下拉到此组件位置时，停留在页面顶部*!
     position: sticky;
-    top: 44px; /* 44px 即顶部导航的高度 */
+    top: 44px; !* 44px 即顶部导航的高度 *!
+  }*/
+  /*.fixed { !* 吸顶后样式 *!
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 44px;
+  }*/
+  .tab-control { /* 设置复制的tab-control组件样式 */
+    position: relative;
+    z-index: 9;
   }
-
   .content {
     position: absolute; /* 绝对定位 子绝父相 */
     top: 44px; /* 顶部导航高度 */
