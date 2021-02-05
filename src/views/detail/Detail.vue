@@ -64,6 +64,7 @@
         shop: {}, // 保存商铺信息
         detailInfo: {}, // 保存商品详情数据 描述 参数等
         paramInfo: {}, // 保存商品参数数据
+        commentInfo: {} /// 保存评论信息数据
       }
     },
     created() {
@@ -84,6 +85,10 @@
         this.detailInfo = data.detailInfo;
         // 5. 获取商品参数数据
         this.paramInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule);
+        // 6. 获取评论的信息
+        if (data.rate.cRate !== 0) { // 判断是否有评论
+          this.commentInfo = data.rate.list[0];
+        }
       })
     },
     methods: {

@@ -2,7 +2,7 @@
   <!-- 使用 轮播图组件 -->
   <swiper>
     <!-- swiper-item组件的个数是请求来的数据决定的故不能写死 -->
-    <swiper-item v-for="item in banners">
+    <swiper-item v-for="(item, index) in banners" :key="index">
       <!-- 每个轮播图都可点击故使用a标签 对应的地址动态绑定 -->
       <a :href="item.link">
         <!-- 对应的图片地址也是动态绑定 -->
