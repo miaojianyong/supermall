@@ -22,6 +22,9 @@
       <!-- 使用商品参数 子组件
       :param-info 给子组件传递参数 -->
       <detail-param-info :param-info="paramInfo"/>
+      <!-- 使用商品展示组件 展示推荐商品
+      :goods="recommends" 把保存的推荐商品数据给该组件 -->
+      <goods-list :goods="recommends"/>
     </scroll>
   </div>
 </template>
@@ -42,9 +45,11 @@
 
   // 导入 滚动组件scroll
   import Scroll from 'components/common/scroll/Scroll';
+  // 导入 goods组件 展示推荐商品
+  import GoodsList from 'components/content/goods/GoodsList';
 
   // 导入详情页网络请求函数
-  import {getDetail, Goods, Shop, GoodsParam} from 'network/detail';
+  import {getDetail, Goods, Shop, GoodsParam, getRecommend} from 'network/detail';
   export default {
     name: 'Detail',
     components: { // 注册子组件
@@ -54,7 +59,8 @@
       DetailShopInfo,
       DetailGoodsInfo,
       DetailParamInfo,
-      Scroll
+      Scroll,
+      GoodsList
     },
     data() {
       return {
@@ -64,7 +70,8 @@
         shop: {}, // 保存商铺信息
         detailInfo: {}, // 保存商品详情数据 描述 参数等
         paramInfo: {}, // 保存商品参数数据
-        commentInfo: {} /// 保存评论信息数据
+        commentInfo: {}, // 保存评论信息数据
+        recommends: [], // 保存商品推荐数据
       }
     },
     created() {
@@ -89,7 +96,12 @@
         if (data.rate.cRate !== 0) { // 判断是否有评论
           this.commentInfo = data.rate.list[0];
         }
-      })
+      });
+      // 3. 请求商品推荐数据
+      getRecommend().then(res => {
+        // 把推荐商品数据给上述设置的recommends进行保存
+        this.recommends = res.data.list;
+      });
     },
     methods: {
       imgLoad() { // 实现子组件发送来的事件

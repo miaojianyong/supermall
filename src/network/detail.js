@@ -43,3 +43,9 @@ export class GoodsParam{
     this.sizes = rule.tables;
   }
 }
+// 封装详情页 推荐商品数据 网络请求
+export function getRecommend() {
+  return request({
+    url: '/recommend'
+  })
+}

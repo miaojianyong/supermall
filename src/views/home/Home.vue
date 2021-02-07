@@ -177,6 +177,8 @@
   import {getHomeMultidata,getHomeGoods} from 'network/home';
   // 导入 防抖函数
   import {debounce} from 'common/utils';
+  // 导入 图片加载完成处理函数 混入函数
+  import {itemListenerMixin} from 'common/mixin.js';
   export default {
     name: "Home",
     components: { // 注册组件
@@ -189,6 +191,8 @@
       Scroll,
       BackTop
     },
+    // 使用混入函数
+    mixins: [itemListenerMixin],
     // 函数调用 -> 压入函数栈（保存函数调用过程中所有变量）
     // 函数调用结束 -> 弹出函数栈（释放函数所有的变量 即删除所有变量）
     // 故 下述中网络请求的函数，需保存起来
@@ -206,6 +210,7 @@
         tabOffsetTop: 0, // 设置分类组件距离顶部的距离
         isTabFixed: false, // 设置分类组件默认属性(即不吸顶)
         saveY: 0, // 保存当前页面离开时位置
+        itemImgListener: null, // 保存全局监听函数
       }
     },
     computed: { // 定义计算属性
@@ -220,8 +225,10 @@
       this.$refs.scroll.refresh();
     },
     deactivated() { // 不活跃时 即在离开当前页面时 触发
-      // 把离开该页面时滚动的位置 给定义的saveY
+      // 1. 把离开该页面时滚动的位置 给定义的saveY
       this.saveY = this.$refs.scroll.getScrollY();
+      // 2. 取消全局事件的监听
+      this.$bus.$off('itemImageLoad', this.itemImgListener);
     },
     created() { // 生命周期函数，即组件创建完成后
       /* 发送网络请求 */
@@ -241,6 +248,10 @@
       this.$bus.$on('itemImageLoad', () => {
         refresh();
       })
+      // 保存全局监听函数
+      this.itemImgListener = () => {
+        refresh();
+      };
     },
     methods: { // 把上述created函数中的代码放到此处
       /* 下述是事件监听相关方法*/
