@@ -40,6 +40,8 @@
     methods: {
       titleClick(index) { // 实现点击标题切换功能
         this.currentIndex = index;
+        // 把点击事件传递出去,并传递index作为参数
+        this.$emit('titleClick', index);
       },
       backClick() { // 实现返回按钮的返回操作
         this.$router.back();
