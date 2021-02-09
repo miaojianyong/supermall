@@ -39,8 +39,9 @@
       :goods="recommends" 把保存的推荐商品数据给该组件 -->
       <goods-list :goods="recommends"/>
     </scroll>
-    <!-- 使用底部导航 子组件 -->
-    <detail-bottom-bar/>
+    <!-- 使用底部导航 子组件
+    @:addCart 监听子组件发送来的事件 -->
+    <detail-bottom-bar @:addCart="addCart"/>
     <!-- 使用 返回顶部组件
     监听组件的点击 不能直接使用@click 需使用@click.native
     v-show="isShowBackTop" 表示给该组件设置默认值 隐藏 -->
@@ -106,7 +107,7 @@
     created() {
       // 1. 保存传入的iid
       // 拿到路由传递过来的参数 即地址栏后面的参数 给上述保存的商品id
-      this.iid = this.$route.params.id;
+      this.iid = this.$route.params.iid;
       // 2. 根据iid请求详情页数据
       getDetail(this.iid).then(res => {
         // console.log(res); 输出请求过来的数据
@@ -192,6 +193,22 @@
         // 当滚动的距离大于1000才显示 返回顶部按钮
         this.isShowBackTop = (-position.y) > 1000;
       },
+      // 实现子组件发送来的 加入购物车事件
+      addCart() {
+        // 1. 获取购物车需要展示的信息
+        const product = {}
+        /* 购物车展示的信息可从data中保存的数据里面取 */
+        product.image = this.topImages[0]; // 图片
+        product.title = this.goods.title; // 标题
+        product.desc = this.goods.desc; // 描述信息
+        product.price = this.goods.newPrice; // 价格
+        product.iid = this.iid; // 商品id
+        // 2. 将商品添加到购物车里
+        // 调用Vuex中mutations中的方法
+        // this.$store.commit('addCart', product); 使用Vuex保存数据
+        // 调用Vuex中actions中的方法
+        this.$store.dispatch('addCart', product);
+      }
     }
   }
 </script>

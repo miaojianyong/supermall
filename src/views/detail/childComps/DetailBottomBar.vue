@@ -24,12 +24,9 @@
 <script>
   export default {
     name: 'DetailBottomBar',
-    props: {
-      goods: { // 接收父组件传递过来的数据
-        type: Object,
-        default() {
-          return {}
-        }
+    methods: {
+      addToCart() { // 实现加入购物车按钮的点击
+        this.$emit('addCart'); // 发送事件
       }
     }
   }

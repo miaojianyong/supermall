@@ -38,7 +38,7 @@ const routes = [
     component: Profile
   },
   {
-    path: '/detail/:id', /* 动态路由方式传递参数 */
+    path: '/detail/:iid', /* 动态路由方式传递参数 */
     component: Detail
   }
 ];
