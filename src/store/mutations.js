@@ -10,5 +10,7 @@ export default {
   // 商品添加到数组中保存
   [ADD_TO_CART](state, payload) {
     state.cartLiat.push(payload);
+    // 设置商品是否选中的属性
+    payload.cheched = true; // 默认是选中的
   }
 }

@@ -46,6 +46,8 @@
     监听组件的点击 不能直接使用@click 需使用@click.native
     v-show="isShowBackTop" 表示给该组件设置默认值 隐藏 -->
     <back-top @click.native="backClick" v-show="isShowBackTop"/>
+    <!-- 使用添加到购物车后弹出提示组件 -->
+    <toast :message="message" :show="show"/>
   </div>
 </template>
 
@@ -70,10 +72,16 @@
   // 导入 goods组件 展示推荐商品
   import GoodsList from 'components/content/goods/GoodsList';
 
+  // 导入 添加商品后的弹出提示组件 公共组件
+  import Toast from 'components/common/toast/Toast';
+
   // 导入详情页网络请求函数
   import {getDetail, Goods, Shop, GoodsParam, getRecommend} from 'network/detail';
   // 导入 混入的对象
   import {backTopMixin} from 'common/mixin';
+
+  // 导入Vuex的Actions的映射
+  import {mapActions} from 'vuex';
   export default {
     name: 'Detail',
     components: { // 注册子组件
@@ -85,7 +93,8 @@
       DetailParamInfo,
       Scroll,
       GoodsList,
-      DetailBottomBar
+      DetailBottomBar,
+      Toast
     },
     // 使用导入的混入代码
     mixins: [backTopMixin],
@@ -102,6 +111,8 @@
         themeTopYs: [], // 保存滚动到指定位置的距离
         getThemeTopY: null, // 保存防抖数据
         currentIndex: 0, // 保存当前详情页导航索引
+        message: '', // 保存弹窗组件提示信息
+        show: false, // 保证弹窗组件是否显示状态
       }
     },
     created() {
@@ -157,6 +168,8 @@
     mounted() {
     },
     methods: {
+      // 使用映射关系
+      ...mapActions(['addCart']),
       imgLoad() { // 实现子组件发送来的事件
         this.$refs.scroll.refresh(); // 刷新滚动高度
         /* 在图片加载完成后的代码中获取 */
@@ -207,7 +220,22 @@
         // 调用Vuex中mutations中的方法
         // this.$store.commit('addCart', product); 使用Vuex保存数据
         // 调用Vuex中actions中的方法
-        this.$store.dispatch('addCart', product);
+        /* this.$store.dispatch('addCart', product).then(res => {
+          console.log(res); // 即添加到购物车后给出响应
+        }) */
+        // 直接使用actions文件中映射的方法
+        this.addCart(product).then(res => {
+          /* console.log(res);// 即添加到购物车后给出响应
+          this.show = true; // 点击后显示弹窗组件
+          this.message = res; // 传递提示信息数据
+          // 设置弹窗设置隐藏
+          setTimeout(() => {
+            this.show = false; // 到时间后隐藏弹窗组件
+            this.message = ''; // 清空提示内容
+          }, 1500) */
+          // 直接使用自定义好的弹窗组件
+          this.$toast.show(res, 2000);
+        })
       }
     }
   }

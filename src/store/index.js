@@ -6,6 +6,9 @@ import Vuex from 'vuex';
 import mutations from './mutations';
 // 导入 actions函数处理文件
 import actions from './actions';
+// 导入 getters函数处理文件
+import getters from './getters';
+
 // 1. 安装Vuex插件
 Vue.use(Vuex);
 // 2. 创建Store对象
@@ -48,6 +51,7 @@ const store = new Vuex.Store({
   // 使用mutations函数
   mutations,
   actions,
+  getters
 });
 // 3. 导出挂载到Vue实例上
 export default store;

@@ -3,6 +3,7 @@
   <div class="goods-item" @click="itemClick">
     <!-- @load="方法名" 表示监听图片加载完后 触发 -->
     <img :src="showImage" alt="" @load="imageLoad"> <!-- 商品图片 -->
+    <img v-lazy="showImage" @load="imageLoad"><!-- 图片懒加载方式 -->
     <div class="goods-info">
       <p>{{goodsItem.title}}</p> <!-- 商品描述 -->
       <span class="price">{{goodsItem.price}}</span> <!-- 商品价格 -->
